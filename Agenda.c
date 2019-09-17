@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 #define NAME_SIZE    25
-#define CELL_SIZE    15
+#define PHONE_SIZE    15
 
-struct Agenda{
+struct sAgenda{
 
-    char complete_name[NAME_SIZE];
-    char cellphone_number[CELL_SIZE];
+    char name[NAME_SIZE];
+    char phone[PHONE_SIZE];
 
 }agenda;
 
@@ -31,9 +32,9 @@ void main()
         printf("\n    2 - Loof for a contact");
         printf("\n    3 - Eliminate a contact");
         printf("\n    4 - Erase agenda");
-        printf("\n    5 - Exit\n\n");
+        printf("\n    5 - Exit");
 
-        printf("    Introduce the option desired: ");
+        printf("\n\n    Introduce the option desired: ");
         fflush(stdin);
         scanf("%d", &control);
 
@@ -47,7 +48,7 @@ void main()
                 break;
             case 4: erase_agenda();
                 break;
-            case 5: exit(0);
+            case 5: exit(EXIT_SUCCESS);
                 break;
             default: printf("\n\n   '%d' is not an option. Try again.", control);
                 break;
@@ -64,19 +65,19 @@ void add_contact(void)
 
     printf("\n    Introuce the first and last name: ");
     fflush(stdin);
-	gets( agenda.complete_name );
+	gets( agenda.name );
 
-    printf("\n    Introuce the cellphone number: ");
+    printf("\n    Introuce the phone number: ");
     fflush(stdin);
-	gets(agenda.cellphone_number);
+	gets(agenda.phone);
 
     fp = fopen("MyAgendaTest.txt", "a+");
     if( fp == NULL ){
 
 		system("cls");
-        printf("\n\n    There was an ERROR opening or creating your file");
+        perror("\n\nERROR");
         getchar();
-		exit(1);
+		exit(EXIT_FAILURE);
 
 	}else{
 
@@ -109,19 +110,19 @@ void lookfor_contact(void)
     {
 
 		system("cls");
-        printf("\n\n    There was an ERROR opening your file");
+        perror("\n\nERROR");
         getchar();
-		exit(1);
+		exit(EXIT_FAILURE);
 
 	}else
     {
         unsigned int control_var = 0;
         while( fread(&agenda, sizeof(agenda), 1, fp) )
     	{
-    		if(strcmp( agenda.complete_name, look_for_name )==0)
+    		if(strcmp( agenda.name, look_for_name )==0)
     		{
-                printf("\n    The name that you are looking for is: %s", agenda.complete_name);
-                printf("\n    The cellphone that you are looking for is: %s", agenda.cellphone_number);
+                printf("\n    The name that you are looking for is: %s", agenda.name);
+                printf("\n    The cellphone that you are looking for is: %s", agenda.phone);
                 control_var = 1;
                 break;
             }
@@ -152,16 +153,16 @@ void eliminate_contact(void)
     {
 
 		system("cls");
-        printf("\n\n    There was an ERROR opening your file");
+        perror("\n\nERROR");
         getchar();
-		exit(1);
+		exit(EXIT_FAILURE);
 
 	}else
     {
         unsigned int control_var = 0;
         while( fread(&agenda,sizeof(agenda),1,fp) )
     	{
-    		if(strcmp( agenda.complete_name, name_to_eliminate )==0)
+    		if(strcmp( agenda.name, name_to_eliminate )==0)
     		{
                 control_var = 1;
             }else
@@ -190,12 +191,12 @@ void erase_agenda(void)
 
     for(index = 0; NAME_SIZE > index; index++)
     {
-        agenda.complete_name[index] = ' ';
+        agenda.name[index] = ' ';
     }
 
-    for(index = 0; CELL_SIZE > index; index++)
+    for(index = 0; PHONE_SIZE > index; index++)
     {
-        agenda.cellphone_number[index] = ' ';
+        agenda.phone[index] = ' ';
     }
 
 }
